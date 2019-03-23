@@ -1,0 +1,337 @@
+package model;
+
+import java.util.*;
+/**
+ *
+ * @author Francisco Olivares
+ */
+public class AlgoritmoReductor {
+    private int[] intBuffer;
+    private static ArregloBidimensional arreglo;  
+    private ArrayList<SimpleGrup> listaGrupos;
+    private int nVariablesHorizontales;
+    private int nVariablesVerticales;
+    private char letraHorizontal;
+    
+    /** Creates a new instance of AlgoritmoReductor */
+    public AlgoritmoReductor(char letraHorizontal) {
+
+        this.letraHorizontal = letraHorizontal;
+        
+        //saca la equivalencia entre el numero de casillas y el numero de variables
+        nVariablesHorizontales = (int)(Math.log10((double)arreglo.dimensionX)/Math.log10(2));
+        nVariablesVerticales   = (int)(Math.log10((double)arreglo.dimensionY)/Math.log10(2));  
+        
+        intBuffer = new int[6];
+        
+        int[] shortHorizontalBuffer = new int[3];
+        int[] shortVerticalBuffer = new int[3];
+        
+        listaGrupos = new ArrayList<SimpleGrup>();        
+        
+        for(int i=0; i<arreglo.dimensionY; i++) {//columnas
+            for(int j=0; j<arreglo.dimensionX; j++) {//filas
+                
+                if(arreglo.getPoint(j,i)) {
+                    shortVerticalBuffer   = getArrayFromInt(i);
+                    shortHorizontalBuffer = getArrayFromInt(j);
+                    intBuffer = pegarShortBuffers(shortHorizontalBuffer,shortVerticalBuffer);
+                    listaGrupos.add(new SimpleGrup(intBuffer));               
+                }
+                
+            }
+        }
+        
+        ArrayList<SimpleGrup> listaGruposTraspaso = new ArrayList<SimpleGrup>();
+        
+        for(int j=0; j < listaGrupos.size(); j++) {
+            for(int i=0; i < listaGrupos.size(); i++) {
+                
+                if(listaGrupos.get(j).considerar)// si los 2 son falsos no los considero
+                    
+                    if(1 == revisaDiferencias6(listaGrupos.get(j).intBuffer, listaGrupos.get(i).intBuffer)) {
+                        
+                        listaGruposTraspaso.add(new SimpleGrup(postRevisaDiferencias6(listaGrupos.get(j).intBuffer,
+                                listaGrupos.get(i).intBuffer)));
+                        
+                        listaGrupos.get(j).noConsiderar();
+                        listaGrupos.get(i).noConsiderar();                                            
+
+                    }
+            }
+            
+            if(listaGrupos.get(j).considerar) {
+                listaGruposTraspaso.add(new SimpleGrup(listaGrupos.get(j).intBuffer));
+                listaGrupos.get(j).noConsiderar();
+            }            
+        }        
+        
+        listaGrupos.clear();
+        listaGrupos = listaGruposTraspaso;
+        
+        for(int i=0; i<listaGrupos.size() ; i++) {
+            if(nVariablesHorizontales == 2)
+                listaGrupos.get(i).intBuffer[0] = -1;
+            if(nVariablesHorizontales == 1) {
+                listaGrupos.get(i).intBuffer[1] = -1;
+                listaGrupos.get(i).intBuffer[0] = -1;
+            }
+            if(nVariablesVerticales == 2)
+                listaGrupos.get(i).intBuffer[3] = -1;
+            if(nVariablesVerticales == 1) {
+                listaGrupos.get(i).intBuffer[3] = -1;
+                listaGrupos.get(i).intBuffer[4] = -1;
+            }
+        }
+        
+        //---------------------------------------------------
+        // AQUI COMIENZA LO NUEVO
+        //---------------------------------------------------
+        for(int runge=0;runge<10;runge++) {  
+            listaGruposTraspaso = new ArrayList<SimpleGrup>();
+            for(int j=0; j < listaGrupos.size(); j++) {
+                for(int i=0; i < listaGrupos.size(); i++) {
+                    if(listaGrupos.get(j).considerar)// si los 2 son falsos no los considero
+                        if(1 == revisaDiferencias6(listaGrupos.get(j).intBuffer,
+                                                   listaGrupos.get(i).intBuffer)) {
+                            listaGruposTraspaso.add(new SimpleGrup(
+                                    postRevisaDiferencias6(listaGrupos.get(j).intBuffer,
+                                                           listaGrupos.get(i).intBuffer)));
+                            listaGrupos.get(j).noConsiderar();
+                            listaGrupos.get(i).noConsiderar();
+                        }
+                }
+                if(listaGrupos.get(j).considerar) {
+                    listaGruposTraspaso.add(new SimpleGrup(listaGrupos.get(j).intBuffer));
+                    listaGrupos.get(j).noConsiderar();
+                }            
+            }
+            listaGrupos.clear();
+            listaGrupos = listaGruposTraspaso;
+
+            for(int i=0; i<listaGrupos.size() ; i++) {
+                if(nVariablesHorizontales == 2)
+                    listaGrupos.get(i).intBuffer[0] = -1;
+                if(nVariablesHorizontales == 1) {
+                    listaGrupos.get(i).intBuffer[1] = -1;
+                    listaGrupos.get(i).intBuffer[0] = -1;
+                }
+                if(nVariablesVerticales == 2)
+                    listaGrupos.get(i).intBuffer[3] = -1;
+                if(nVariablesVerticales == 1) {
+                    listaGrupos.get(i).intBuffer[3] = -1;
+                    listaGrupos.get(i).intBuffer[4] = -1;
+                }
+            }
+        }
+
+        for(int runge=0;runge<10;runge++) {              
+            listaGruposTraspaso = new ArrayList<SimpleGrup>();
+            for(int j=0; j < listaGrupos.size(); j++) {
+                for(int i=0; i < listaGrupos.size(); i++) {
+                    if(true) //listaGrupos.get(i).considerar)// si los 2 son falsos no los considero
+                        if(0 == revisaDiferencias6(listaGrupos.get(j).intBuffer,
+                                                   listaGrupos.get(i).intBuffer)) {
+                            listaGruposTraspaso.add(new SimpleGrup(listaGrupos.get(j)));
+                            listaGrupos.get(j).noConsiderar();
+                            listaGrupos.get(i).noConsiderar();
+                        }
+                }
+		if(listaGrupos.get(j).considerar) {
+                    listaGruposTraspaso.add(new SimpleGrup(listaGrupos.get(j).intBuffer));
+                    listaGrupos.get(j).noConsiderar();
+                }         
+            }
+            listaGrupos.clear();
+            listaGrupos = listaGruposTraspaso;
+
+            for(int i=0; i<listaGrupos.size() ; i++) {
+                if(nVariablesHorizontales == 2)
+                    listaGrupos.get(i).intBuffer[0] = -1;
+                if(nVariablesHorizontales == 1) {
+                    listaGrupos.get(i).intBuffer[1] = -1;
+                    listaGrupos.get(i).intBuffer[0] = -1;
+                }
+                if(nVariablesVerticales == 2)
+                    listaGrupos.get(i).intBuffer[3] = -1;
+                if(nVariablesVerticales == 1) {
+                    listaGrupos.get(i).intBuffer[3] = -1;
+                    listaGrupos.get(i).intBuffer[4] = -1;
+                }
+            }        
+        }       
+    }
+    public static void setArregloBidimensional(ArregloBidimensional info) {
+        arreglo = info;
+    }
+    
+    /**
+     * Convierte el valor numerico en un array que representa el valor en binario
+     */
+    private int[] getArrayFromInt(int num) {
+        int[] numero = new int[]{0,0,0};
+        
+        for(int i=0; i<num; i++) {
+            numero = sumadorUnitario(numero);
+        }
+        
+        return(numero);
+    }
+    
+    /**
+     * Regresa un array con los valores de los dos arreglos en uno solo
+     */
+    private int[] pegarShortBuffers(int[] shortHorizontalBuffer, int[] shortVerticalBuffer) {
+        int[] suma = new int[6];
+        for(int i=0; i<6;i++) {
+            if(i < 3 )
+                suma[i] = shortHorizontalBuffer[i];
+            else
+                suma[i] = shortVerticalBuffer[i-3];
+        }        
+        return(suma);
+    }
+    
+    /**
+     * Regresa el valor equivalente (indice) de un mintermino  
+     */
+    private int valorDelArreglo(int[] array3) {
+        int suma = 0;
+        for(int i=0; i<3;i++) {
+            
+            if(array3[2-i] == 1)
+                suma += (int)Math.pow(2,i);
+        }
+        
+        return(suma);
+    }   
+    
+    private static int revisaDiferencias(int[] array3a,int[] array3b) {
+        int revicion =0;
+        for(int i=0; i<3;i++) {
+            if(array3a[i] != array3b[i])
+                revicion++;
+        }        
+        return(revicion);
+    }
+
+    private int revisaDiferencias6(int[] array6a,int[] array6b) {
+        int revicion =0;
+        for(int i=0; i<6;i++) {
+            if(array6a[i] != array6b[i])
+                revicion++;
+        }        
+        return(revicion);
+    }
+    private int[] postRevisaDiferencias6(int[] array6a,int[] array6b) {
+        int[] suma = new int[6];
+        for(int i=0; i<6;i++) {
+            if(array6a[i] != array6b[i])
+                suma[i] = -1;
+            else 
+                suma[i] = array6a[i];
+        }        
+        return(suma);
+    }
+    
+    /**
+     * Convierte el valor del mintermino en un arrar que representa al mismo
+     */
+    private int[] sumadorUnitario(int[] anterior) {
+        int[] suma = new int[3];
+        
+        //for(int i=0;i<7;i++) {
+            
+            switch(valorDelArreglo(anterior)) {
+                case 0:
+                    suma = new int[]{0,0,1};
+                    break;
+                case 1:
+                    suma = new int[]{0,1,1};
+                    break;
+                case 2:
+                    suma = new int[]{1,1,0};
+                    break;
+                case 3:
+                    suma = new int[]{0,1,0};
+                    break;
+                case 4:
+                    suma = new int[]{1,0,1};
+                    break;
+                case 5:
+                    suma = new int[]{1,1,1};
+                    break;
+                case 6:
+                    suma = new int[]{1,0,0};
+                    break;
+                default:
+                    suma = new int[]{0,0,0};                  
+            }        
+        //}
+        
+        return(suma);
+    }
+    private int[] sumadorUnitarioNormal(int[] anterior) {
+        int[] suma = new int[3];
+        int resto=0;
+        if(anterior[2] == 1) {
+                suma[2] = 0;
+                resto = 1;
+        }
+        else
+            suma[2] = 1;        
+        for(int i=1; i>-1; i--) {
+            if(anterior[i] == 1 && resto == 0) {
+                suma[i] = 1;
+                resto = 0;
+            }
+            else if(anterior[i] == 1 && resto == 1) {
+                suma[i] = 0;
+                resto = 1;
+            }
+            else if(anterior[i] == 0 && resto == 1) {
+                suma[i] = 1;
+                resto = 0;
+            }
+            else
+                suma[i] = anterior[i];  
+        }
+        return(suma);
+    }
+    
+    public String getString() {
+        String texto = new String();
+        char letraVertical   = 'a';
+        char letraHorizontal = this.letraHorizontal;
+        /*listaGrupos*/
+        for(int z=0; z<listaGrupos.size();z++) {
+            for(int i=3-nVariablesVerticales; i <3 ; i++) {
+                if(listaGrupos.get(z).intBuffer[i+3] == -1) {
+                }
+                else {
+                    texto = texto.concat(String.valueOf(letraVertical));
+                    
+                    if(listaGrupos.get(z).intBuffer[i+3] == 0) {
+                        texto = texto.concat("'");
+                    }                    
+                }
+                letraVertical++;    
+            }
+            for(int i=3-nVariablesHorizontales; i <3; i++) {
+                if(listaGrupos.get(z).intBuffer[i] == -1) {
+                }
+                else {
+                    texto = texto.concat(String.valueOf(letraHorizontal));
+                    if(listaGrupos.get(z).intBuffer[i] == 0) {
+                        texto = texto.concat("'");
+                    } 
+                }
+                letraHorizontal++;                     
+            }
+            texto = texto.concat(" + ");
+            letraVertical   = 'a';
+            letraHorizontal = this.letraHorizontal;
+        }         
+        return(texto);
+    }    
+}

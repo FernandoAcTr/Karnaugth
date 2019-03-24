@@ -12,7 +12,7 @@ public class ResolvMethod {
         this.numCasillasHorizontales = numCasillasHorizontales;
         this.numCasillasVerticales = numCasillasVerticales;
 
-        clasificador = new ClasificadorLetras(arreglo);
+        clasificador = new ClasificadorLetras(arreglo, letraHorizontal);
         AlgoritmoReductor.setArregloBidimensional(arreglo);
 
 
@@ -44,7 +44,7 @@ public class ResolvMethod {
         String shortS = reductor.getString();
         shortS = shortS.substring(0, shortS.length()-2);
 
-        if(shortS.equals(""))
+        if(shortS.equals(" "))
             shortS = "1";
 
         return shortS;

@@ -4,84 +4,25 @@ public class ClasificadorLetras {
     private ArregloBidimensional arreglo;
     public int variablesHorizontales;
     public int variablesVerticales;
-    private final double log2 = Math.log10(2);
+    private char letraHorizontal;
 
     private boolean[][] definicion4;
     private boolean[][] definicion2;
 
 
     /** Creates a new instance of ClasificadorLetras */
-    public ClasificadorLetras(ArregloBidimensional array) {
+    public ClasificadorLetras(ArregloBidimensional array, char letraHorizontal) {
         arreglo = array;
+        this.letraHorizontal = letraHorizontal;
 
         //saca la equivalencia entre el numero de casillas y el numero de variables
-        variablesHorizontales = (int)(Math.log10((double)arreglo.dimensionX)/log2);
-        variablesVerticales   = (int)(Math.log10((double)arreglo.dimensionY)/log2);    
+        variablesHorizontales = (int)(Math.log10((double)arreglo.dimensionX)/Math.log10(2));
+        variablesVerticales   = (int)(Math.log10((double)arreglo.dimensionY)/Math.log10(2));
 
         definicion4 = new boolean[4][2];        
-        definicion2 = new boolean[2][2];        
+        definicion2 = new boolean[2][1];
         definicionDeArreglos();
     }
-    
-    /** Este metodo me da los nombres a las variables que aparecen
-     *  en la parte horizontal, justo arriba del grafico.
-     *  @param posicion esta es la posicion del cuadrado a nombrar
-     *  @return retorna un string que es la representacion de ese lugar.     
-     */
-    public String getHorizontalClasificacion(int posicion) {
-        char letra = 'a';
-        boolean[][] definicion;
-        switch(arreglo.dimensionY) {
-            case 2:
-                definicion = definicion2;
-                break;  
-            case 4:
-                definicion = definicion4;
-                break;
-            default:
-                definicion = definicion4;
-        }       
-        String texto = new String();
-        
-        for(int i=0; i<variablesVerticales; i++) {
-            texto = texto.concat(String.valueOf(letra));
-            if(!definicion[posicion][i]) {
-                texto = texto.concat("'");
-            }                          
-            letra++;
-        }
-        return(texto);
-    }
-    
-    /** Este metodo me da los nombres a las variables que aparecen
-     *  en la parte vertical, justo al lado izquierdo del grafico.
-     *  @param posicion esta es la posicion del cuadrado a nombrar
-     *  @return retorna un string que es la representacion de ese lugar.     
-     */    
-    public String getVerticalClasificacion(int posicion) {
-        char letra = 'c';
-        boolean[][] definicion;
-        switch(arreglo.dimensionX) {
-            case 2:
-                definicion = definicion2;
-                break;  
-            case 4:
-                definicion = definicion4;
-                break;
-            default:
-                definicion = definicion4;
-        } 
-        
-        String texto = new String();
-        for(int i=0; i<variablesHorizontales; i++) {
-            texto = texto.concat(String.valueOf(letra));
-            if(!definicion[posicion][i]) {
-                texto = texto.concat("'");
-            }                          
-            letra++;
-        }
-        return(texto);
-    }    
     
     /**
      * En un mapa K, cada casilla tiene un minterm. Regresa el minterm de una casilla especifica sin simplificar.
@@ -91,7 +32,7 @@ public class ClasificadorLetras {
         String texto = new String();
         boolean[][] definicion;
         char letraVertical   = 'a';
-        char letraHorizontal = 'c';
+        char letraHorizontal = this.letraHorizontal;
         
         if(arreglo.getPoint(fila,columna)) {    
             
@@ -108,7 +49,9 @@ public class ClasificadorLetras {
             }              
             
             for(int i=0; i<variablesVerticales; i++) {
+
                 texto = texto.concat(String.valueOf(letraVertical));
+
                 if(!definicion[columna][i]) {
                     texto = texto.concat("'");
                 }                          

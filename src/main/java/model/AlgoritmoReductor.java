@@ -205,24 +205,23 @@ public class AlgoritmoReductor {
         
         return(suma);
     }   
-    
-    private static int revisaDiferencias(int[] array3a,int[] array3b) {
-        int revicion =0;
-        for(int i=0; i<3;i++) {
-            if(array3a[i] != array3b[i])
-                revicion++;
-        }        
-        return(revicion);
-    }
 
+
+    /**
+     * Devuelve cuantas diferencias hay entre los arreglos como parametros
+     */
     private int revisaDiferencias6(int[] array6a,int[] array6b) {
-        int revicion =0;
+        int revision =0;
         for(int i=0; i<6;i++) {
             if(array6a[i] != array6b[i])
-                revicion++;
+                revision++;
         }        
-        return(revicion);
+        return(revision);
     }
+
+    /**
+     * Marcamos las diferencias entre dos arreglos con un asterisco (en este caso un -1)
+     */
     private int[] postRevisaDiferencias6(int[] array6a,int[] array6b) {
         int[] suma = new int[6];
         for(int i=0; i<6;i++) {
@@ -235,7 +234,7 @@ public class AlgoritmoReductor {
     }
     
     /**
-     * Convierte el valor del mintermino en un arrar que representa al mismo
+     * Convierte el valor de la fila en un array que representa al mismo
      */
     private int[] sumadorUnitario(int[] anterior) {
         int[] suma = new int[3];
@@ -271,33 +270,7 @@ public class AlgoritmoReductor {
         
         return(suma);
     }
-    private int[] sumadorUnitarioNormal(int[] anterior) {
-        int[] suma = new int[3];
-        int resto=0;
-        if(anterior[2] == 1) {
-                suma[2] = 0;
-                resto = 1;
-        }
-        else
-            suma[2] = 1;        
-        for(int i=1; i>-1; i--) {
-            if(anterior[i] == 1 && resto == 0) {
-                suma[i] = 1;
-                resto = 0;
-            }
-            else if(anterior[i] == 1 && resto == 1) {
-                suma[i] = 0;
-                resto = 1;
-            }
-            else if(anterior[i] == 0 && resto == 1) {
-                suma[i] = 1;
-                resto = 0;
-            }
-            else
-                suma[i] = anterior[i];  
-        }
-        return(suma);
-    }
+
     
     public String getString() {
         String texto = new String();

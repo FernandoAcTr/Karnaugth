@@ -11,7 +11,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/karnauth.fxml"));
-        Scene scene = new Scene(root, 660, 550);
+        Scene scene = new Scene(root, 660, 590);
         scene.getStylesheets().add("/css/style.css");
         scene.getStylesheets().add("/org/kordamp/bootstrapfx/bootstrapfx.css");
         primaryStage.setTitle("Hello World");

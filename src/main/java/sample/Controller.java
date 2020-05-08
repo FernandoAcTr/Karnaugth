@@ -6,14 +6,19 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import model.ArregloBidimensional;
 import model.ResolvMethod;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -65,6 +70,8 @@ public class Controller implements Initializable {
     @FXML
     private Label lblResult;
 
+    @FXML private MenuItem mnuAbout;
+
     Label termsTwoVar[];
     Label termsThreeVar[];
     Label termsFourVar[];
@@ -99,15 +106,21 @@ public class Controller implements Initializable {
                 int var = spinnerNumTerms.getValue();
                 showMap(var);
                 showExpresion(var);
+            }
+        });
 
-                /*if (var == 2)
-                    printMatriz(matTwoVar, 2, 2);
-
-                if (var == 3)
-                    printMatriz(matThreeVar, 2, 4);
-
-                if (var == 4)
-                    printMatriz(matFourVar, 4, 4);*/
+        mnuAbout.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                Stage stage = new Stage();
+                try {
+                    Parent root = FXMLLoader.load(getClass().getResource("/fxml/layout_about.fxml"));
+                    Scene scene = new Scene(root, 420, 270);
+                    scene.getStylesheets().add("/org/kordamp/bootstrapfx/bootstrapfx.css");
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -175,6 +188,7 @@ public class Controller implements Initializable {
         paneMinterms.getChildren().clear();
         for (int i = 0; i < Math.pow(2, numVar) ; i++) {
             CheckBox check = new CheckBox(""+i);
+            check.setPrefWidth(50);
             paneMinterms.getChildren().add(check);
         }
     }

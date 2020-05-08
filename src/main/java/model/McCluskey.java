@@ -5,7 +5,7 @@ import java.util.*;
  *
  * @author Francisco Olivares
  */
-public class AlgoritmoReductor {
+public class McCluskey {
     private int[] intBuffer;
     private static ArregloBidimensional arreglo;  
     private ArrayList<SimpleGrup> listaGrupos;
@@ -13,8 +13,8 @@ public class AlgoritmoReductor {
     private int nVariablesVerticales;
     private char letraHorizontal;
     
-    /** Creates a new instance of AlgoritmoReductor */
-    public AlgoritmoReductor(char letraHorizontal) {
+    /** Creates a new instance of McCluskey */
+    public McCluskey(char letraHorizontal) {
 
         this.letraHorizontal = letraHorizontal;
         

@@ -4,19 +4,19 @@ public class ResolvMethod {
 
     private ArregloBidimensional arreglo;
     private int numCasillasHorizontales, numCasillasVerticales;
-    private ClasificadorLetras clasificador;
-    private AlgoritmoReductor reductor;
+    private LetterFactory factory;
+    private McCluskey reductor;
 
     public ResolvMethod(ArregloBidimensional arreglo, int numCasillasHorizontales, int numCasillasVerticales, char letraHorizontal) {
         this.arreglo = arreglo;
         this.numCasillasHorizontales = numCasillasHorizontales;
         this.numCasillasVerticales = numCasillasVerticales;
 
-        clasificador = new ClasificadorLetras(arreglo, letraHorizontal);
-        AlgoritmoReductor.setArregloBidimensional(arreglo);
+        factory = new LetterFactory(arreglo, letraHorizontal);
+        McCluskey.setArregloBidimensional(arreglo);
 
 
-        reductor = new AlgoritmoReductor(letraHorizontal);
+        reductor = new McCluskey(letraHorizontal);
     }
 
     public String getLongExpresion(){
@@ -26,7 +26,7 @@ public class ResolvMethod {
         for(int i=0; i<numCasillasVerticales; i++) {
             for(int j=0; j<numCasillasHorizontales ; j++) {
 
-                tempText = clasificador.getStringAtPosition(j,i);
+                tempText = factory.getStringAtPosition(j,i);
 
                 if(!tempText.equals(""))
                     texto = texto.concat( tempText + " + ");

@@ -1,6 +1,6 @@
 package model;
 
-public class ClasificadorLetras {
+public class LetterFactory {
     private ArregloBidimensional arreglo;
     public int variablesHorizontales;
     public int variablesVerticales;
@@ -10,8 +10,8 @@ public class ClasificadorLetras {
     private boolean[][] definicion2;
 
 
-    /** Creates a new instance of ClasificadorLetras */
-    public ClasificadorLetras(ArregloBidimensional array, char letraHorizontal) {
+    /** Creates a new instance of LetterFactory */
+    public LetterFactory(ArregloBidimensional array, char letraHorizontal) {
         arreglo = array;
         this.letraHorizontal = letraHorizontal;
 
